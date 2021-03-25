@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from subleq import *
 
 with open(sys.argv[1],'r') as f:
@@ -8,9 +10,7 @@ list = []
 for line in lines:
     list_ = line.split(' ')
     for item in list_:
-        try:
+        if item != '':
             list.append(int(item))
-        except:
-            pass
         
 run(list)
