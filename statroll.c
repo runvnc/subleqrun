@@ -51,16 +51,16 @@ int d6() {
 }
 
 void diceline(int y, char* descr) {
-    setPos(5, y);
+    setPos(3, y);
     fgColor(WHITE);
     char* yellow = "\x1B[38;5;11m";
     char* whites = "\x1B[38;5;15m";
     printf("╔═══════════════╦════════════════════════════╗");
-    setPos(5, y+1);
+    setPos(3, y+1);
     printf("║ ");
     printf(descr,yellow,whites);
     printf("  ║                            ║");
-    setPos(5, y+2);
+    setPos(3, y+2);
     printf("╚═══════════════╩════════════════════════════╝");    
 }
 
@@ -74,18 +74,21 @@ void initrolls() {
         lines[i] = 0;
         totals[i] = 0;
     }
-    lines[4] = 3;
-    lines[6] = 6;
-    lines[8] = 9;
-    lines[10] = 12;
-    lines[12] = 15;
-    lines[20] = 18;
-    lines[100] = 21;
+    lines[4] = 4;
+    lines[6] = 7;
+    lines[8] = 10;
+    lines[10] = 13;
+    lines[12] = 16;
+    lines[20] = 19;
+    lines[100] = 22;
 }
 
 void ui() {
     clearScreen();
     fillbox(BLUE, 1, 2, 51, 25);
+    setPos(20,2);
+    fgColor(YELLOW);
+    printf("Dice Roller");
     initrolls();
     diceline(lines[4],"(%s4%s)-sided   ");
     diceline(lines[6],"(%s6%s)-sided   " );
@@ -94,6 +97,11 @@ void ui() {
     diceline(lines[12], "(%s1%s)2-sided  ");
     diceline(lines[20], "(%s2%s)0-sided  ");
     diceline(lines[100], "(%sh%s)100-sided");
+    setPos(15,25);
+    fgColor(YELLOW);
+    char* yellows = "\x1B[38;5;11m";
+    char* whites = "\x1B[38;5;15m";
+    printf("(%sc%s)lear rolls    (%sq%s)uit",yellows, whites);
 }
 
 void clearrolls() {
@@ -160,8 +168,12 @@ int main() {
    while (1) {
      int d = getchar();
      if (d == 'c') clearrolls();
+     if (d == 'q') break;
      else roll(d-48);
    }
+   fgColor(BLACK);
+   bgColor(BLACK);
+   clearScreen();
    fgColor(WHITE);
 }
 

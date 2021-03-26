@@ -1,5 +1,4 @@
 import sys
-
 from readchar import readchar
 
 def run(mem):
