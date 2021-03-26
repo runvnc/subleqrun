@@ -53,12 +53,12 @@ int d6() {
 void diceline(int y, char* descr) {
     setPos(5, y);
     fgColor(WHITE);
-    char* reds = "\x1B[38;5;1m";
+    char* yellow = "\x1B[38;5;11m";
     char* whites = "\x1B[38;5;15m";
     printf("╔═══════════════╦════════════════════════════╗");
     setPos(5, y+1);
     printf("║ ");
-    printf(descr,reds,whites);
+    printf(descr,yellow,whites);
     printf("  ║                            ║");
     setPos(5, y+2);
     printf("╚═══════════════╩════════════════════════════╝");    
@@ -109,13 +109,15 @@ void clearrolls() {
 
 int lastroll = 0;
 
-void roll(int sides) {
+int roll(int sides) {
+    if (sides<0||sides>56) return 0;
     if (sides != lastroll) clearrolls();
     lastroll = sides;
     if (sides == 0) { sides = 10;}
     else if (sides == 1) { sides = 12; }
     else if (sides == 2) { sides = 20; }
     else if (sides == 56) { sides = 100; }
+    if (lines[sides]==0) return 0;
     int r = rand() % sides + 1;
     int max = 7;
     if (sides == 100) max = 5;
