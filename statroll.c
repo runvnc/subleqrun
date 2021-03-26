@@ -50,44 +50,92 @@ int d6() {
     return rand() % 6 + 1; 
 }
 
-int min(int a, int b) {
-    if (a<b) {
-      return a;
-    } else {
-      return b;
-    }    
-}
-
-int _4d6() {
-    int lowest = 0; 
-    int total = 0;
-    for (int i=0; i<3; i++) {
-        int roll = d6();
-        lowest = min(lowest,roll);
-        total += roll;
-    }
-    total -= lowest;
-    return total;
-}
-
-void diceline(int y, char* sides) {
+void diceline(int y, char* descr) {
     setPos(5, y);
-    int key = sides[0];
     fgColor(WHITE);
     char* reds = "\x1B[38;5;1m";
     char* whites = "\x1B[38;5;15m";
-    printf("╔═════════════╦═════════════════════════════════╗");
+    printf("╔═══════════════╦════════════════════════════╗");
     setPos(5, y+1);
-    printf("║  (%s%c%s)       ║                                 ║", reds,key,whites);
+    printf("║ ");
+    printf(descr,reds,whites);
+    printf("  ║                            ║");
     setPos(5, y+2);
-    printf("╚═════════════╩═════════════════════════════════╝");
-    
+    printf("╚═══════════════╩════════════════════════════╝");    
 }
 
-int ui() {
-    fillbox(BLUE, 3, 3, 40, 13);
-    diceline(5,"20");
+int rolls[101];
+int lines[101];
+int totals[101];
+
+void initrolls() {
+    for (int i=0; i<101; i++) {
+        rolls[i] = 0;
+        lines[i] = 0;
+        totals[i] = 0;
+    }
+    lines[4] = 3;
+    lines[6] = 6;
+    lines[8] = 9;
+    lines[10] = 12;
+    lines[12] = 15;
+    lines[20] = 18;
+    lines[100] = 21;
 }
+
+void ui() {
+    clearScreen();
+    fillbox(BLUE, 1, 2, 51, 25);
+    initrolls();
+    diceline(lines[4],"(%s4%s)-sided   ");
+    diceline(lines[6],"(%s6%s)-sided   " );
+    diceline(lines[8], "(%s8%s)-sided   ");
+    diceline(lines[10], "1(%s0%s)-sided  ");
+    diceline(lines[12], "(%s1%s)2-sided  ");
+    diceline(lines[20], "(%s2%s)0-sided  ");
+    diceline(lines[100], "(%sh%s)100-sided");
+}
+
+void clearrolls() {
+    initrolls();
+    for (int i=0; i<101; i++) {
+      if (lines[i] > 0) {
+        setPos(22, lines[i]+1);
+        bgColor(BLUE);
+        repeatChar(' ',26);
+      }
+    }
+}
+
+int lastroll = 0;
+
+void roll(int sides) {
+    if (sides != lastroll) clearrolls();
+    lastroll = sides;
+    if (sides == 0) { sides = 10;}
+    else if (sides == 1) { sides = 12; }
+    else if (sides == 2) { sides = 20; }
+    else if (sides == 56) { sides = 100; }
+    int r = rand() % sides + 1;
+    int max = 7;
+    if (sides == 100) max = 5;
+    if (rolls[sides] == max) {
+        clearrolls();
+    }
+    totals[sides] += r;
+    rolls[sides] += 1;
+    int n = 3;
+    if (sides == 100) { n = 4; }
+    setPos(20 + (rolls[sides] * n)+1, lines[sides]+1);
+    fgColor(BLACK);
+    bgColor(WHITE);
+    printf("%d", r);
+    fgColor(GREEN);
+    bgColor(WHITE);
+    setPos(45, lines[sides]+1);
+    printf("%d", totals[sides]);
+}
+
 
 int getseed() {
    clearScreen();
@@ -108,9 +156,9 @@ int main() {
    setPos(10,10);
    fgColor(YELLOW);
    while (1) {
-     int n = rand() % 20;
-     printf("Single stat roll: %d\n", _4d6());
      int d = getchar();
+     if (d == 'c') clearrolls();
+     else roll(d-48);
    }
    fgColor(WHITE);
 }
