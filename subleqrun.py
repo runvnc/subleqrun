@@ -2,6 +2,8 @@
 
 from subleq import *
 
+fname = sys.argv[1]
+
 with open(sys.argv[1],'r') as f:
     text = f.read()
 
