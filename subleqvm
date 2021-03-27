@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys
 from readchar import readchar
 
@@ -27,4 +28,18 @@ def run(mem):
         if printing and mem[b] != -1:
             sys.stdout.buffer.flush()
             printing = False
+ 
+fname = sys.argv[1]
+
+with open(sys.argv[1],'r') as f:
+    text = f.read()
+
+lines = text.split('\n')
+list = []
+for line in lines:
+    list_ = line.split(' ')
+    for item in list_:
+        if item != '':
+            list.append(int(item))
         
+run(list)
